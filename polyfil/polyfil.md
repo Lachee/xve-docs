@@ -9,6 +9,10 @@ Events are as written in the Discord documentation, except for the following rul
     * `guild_id, message_id, channel_id` would become `(GuildObject, ChannelObject, MessageObject)` in the callback.
 * Updates generally have a Before and After. You may need some caching to support this feature!
 
+## Async
+Async is not supported. The `then` callback is used for everything.
+Instead of `await channel.send()` its, `channel.send().then(callback);`
+
 ## Functions
 Expected functions and their parameters:
 
