@@ -15,3 +15,8 @@ Expected functions and their parameters:
 | Function | Parameters | D.JS Equiv |
 |----------|------------|------------|
 | sendMessage | Channel / Snowflake, String | channel.send(string) |
+
+
+## Examples
+
+[Discord.JS](./discordjs.js)
