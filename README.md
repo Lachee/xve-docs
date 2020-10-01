@@ -7,7 +7,11 @@ If you have any issues with the documentation, feel free to contribute.
 ### Getting Started
 
 A good place to start is over at the Node Index. This contains all the information for a particular node.
+
+
 [Node Index](./nodes/index)
+
+[Polyfil](./polyfil/polyfil.md)
 
 
 [GH Pages](https://lachee.github.io/xve-docs/)
