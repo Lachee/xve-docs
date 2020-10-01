@@ -11,6 +11,7 @@ Events are as written in the Discord documentation, except for the following rul
 
 ## Functions
 Expected functions and their parameters:
+
 | Function | Parameters | D.JS Equiv |
 |----------|------------|------------|
 | sendMessage | Channel / Snowflake, String | channel.send(string) |
