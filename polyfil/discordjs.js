@@ -1,4 +1,4 @@
-export class DiscordJsPolyfil {
+export class DiscordJsPolyfill {
     constructor(client) {
         this.client = client;
     }
@@ -39,7 +39,7 @@ export class DiscordJsPolyfil {
         }
     }
 
-    sendMessage(channel, contents, callback) {
+    sendMessage(channel, contents, embed, callback) {
         if (typeof channel === 'string') {
             this.client.channels.fetch(channel).then(channel => { 
                 channel.send(contents).then(msg => callback(msg));
@@ -47,5 +47,8 @@ export class DiscordJsPolyfil {
         } else {
             channel.send(contents).then(msg => callback(msg));
         }
+    }
+
+    editMessage(message, contents, embed, callback) {        
     }
 }

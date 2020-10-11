@@ -20,6 +20,13 @@ Expected functions and their parameters:
 |----------|------------|------------|
 | sendMessage | Channel / Snowflake, String | channel.send(string) |
 
+TODO: Implement more of these
+
+## Objects
+Objects passed to graphs are expected to match the Discord API's responses. There are some rules to govern how objects should look and behave:
+* lowerPascalCase names instead of snake_case.
+* Snowflakes are expected to be converted to their respective object (minus id). For example, `guild_id` should be a `guild` that returns a guild object.
+* No promises. These are not supported.
 
 ## Examples
 
