@@ -22,6 +22,23 @@ XVE works fairly bare bones. In order to appeal to as many potential hosts, it t
 
 For more information on polyfilling, and a Discord.js example polyfill, please read the [Polyfill](./polyfil/polyfil.md) documentation.
 
+## Webhooks
+
+During the initial prototype, projects can be assigned webhooks.
+These webhooks are called with a HTTP POST request and its payload looks like thus:
+```
+{
+    "id": 42,
+    "event": "event:project:deploy",
+    "ast": { /** ... spooky ESTree  ... */ }
+}
+```
+
+The webhook will also give a special header: `X-XVE-Webhook`.
+This header is a [JWT](https://jwt.io/), and contains the MD5 and SHA1 hash of the JSON payload. It is important you verify the checksum of what you got against the JWT, and then verify the JWT was actually created by XVE with the [Public Key](https://xve.lu.je/jwt). This will ensure that no man-in-the-middle gave you a dodgy AST.
+
+**Remember, this is glorified remote code execution!**
+
 ## Custom Nodes
 
 XVE is in a very early state and does not have the framework yet to support every individual providers needs. In saying that however, with the introduction to monetization schemes, XVE will allow for integrators to define not only what nodes are available for their users, but also custom nodes.
