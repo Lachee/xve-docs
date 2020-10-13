@@ -35,7 +35,7 @@ These webhooks are called with a HTTP POST request and its payload looks like th
 ```
 
 The webhook will also give a special header: `X-XVE-Webhook`.
-This header is a [JWT](https://jwt.io/), and contains the MD5 and SHA1 hash of the JSON payload. It is important you verify the checksum of what you got against the JWT, and then verify the JWT was actually created by XVE with the [Public Key](https://xve.lu.je/jwt). This will ensure that no man-in-the-middle gave you a dodgy AST.
+This header is a [JWT](https://jwt.io/), and contains the MD5 and SHA1 hash of the JSON payload. It is important you verify the checksum of what you got against the JWT, and then verify the JWT was actually created by XVE with the [Public Key](https://xve.lachee.dev/jwt). This will ensure that no man-in-the-middle gave you a dodgy AST.
 
 **Remember, this is glorified remote code execution!**
 
