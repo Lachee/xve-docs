@@ -3,9 +3,12 @@ import { DJSPolyfill } from '../polyfill/discordjs.mjs';
 import { generate } from 'astring';
 import fetch  from 'node-fetch';
 import fs from 'fs/promises';
+import http from 'http';
 import Discord from 'discord.js';
+import { JWT, JWK } from 'jose';
+import crypto from 'crypto';
 
-console.log("test");
+console.log("XVE Example Bot Service");
 let discord = null;
 let client = null;
 
@@ -33,7 +36,15 @@ async function runFile(file) {
 
 async function run(ast) {
 
+    if (discord != null) {
+        console.log('Destroying discord client for new ast...');
+        discord.destroy();
+        discord = null;
+        client = null;
+    }
+
     //Prepare discord
+    console.log('Creating discord client');
     discord = new Discord.Client();
     discord.on('ready', () => { 
         console.log('Bot Ready. Evaluating code...');
@@ -58,7 +69,64 @@ async function run(ast) {
     return await discord.login(process.env.TOKEN);
 }
 
+// Run the default instance
+// runFile('example.json').then(() => {
+//     console.log('terminated');
+// });
 
-runFile('example.json').then(() => {
-    console.log('terminated');
-});
+
+//Create a webserver and listen to that
+http.createServer(async (request, response) => {
+    
+    //Validate the method
+    if (request.method !== 'POST') {
+        response.writeHead(405);
+        response.end('Posts only');
+        return;
+    }
+
+    //Make sure we have a webhook header
+    const token = request.headers['x-xve-webhook'];
+    if (token == null || token == '') { 
+        console.log('bad request, missing jwt');
+        response.writeHead(403);
+        response.end('Missing JWT');
+        return;
+    }
+    
+    try {
+        //Validate the webhook
+        const publicKey = await fs.readFile(process.env.JWT_PATH || 'jwt.pub');
+        const key = JWK.asKey(publicKey);
+        const jwt = JWT.verify(token, key);
+
+        //Get the body and validate it
+        let body = '';
+        request.on('data', chunk => {body += chunk.toString(); });
+        request.on('end', () => {
+            
+            //Verify the checksums
+            const md5 = crypto.createHash('md5').update(body).digest('hex');
+            const sha1 = crypto.createHash('sha1').update(body).digest('hex');
+            if (md5 !== jwt.md5 || sha1 !== jwt.sha) {
+                console.log('bad request, invalid sums');
+                response.writeHead(403);
+                response.end('Bad check sums, payload interfered with. This incident maybe reported.');
+                return;
+            }
+
+            //Now that we verified everything is the same still, deploy
+            const webhook = JSON.parse(body);
+            run(webhook.ast);
+
+            //Tell them we deployed
+            response.writeHead(200);
+            response.end('Deployed', null, 2);
+        });
+        
+    } catch(e) {
+        console.log('bad request, error', e);
+        response.writeHead(403);
+        response.end(JSON.stringify(e));
+    }
+}).listen(process.env.PORT || 3000);
