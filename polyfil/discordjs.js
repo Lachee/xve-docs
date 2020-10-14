@@ -5,9 +5,17 @@ export class DJSPolyfill {
         this.websocket  = new DJSWebsocket(this);
     }
 
-    createMessage(djs_message) {
-        return Object.assign(djs_message, {
-            
+    createMessage(djsMsg) {
+        return Object.assign(djsMsg, {
+            timestamp:          djsMsg.createdTimestamp,
+            mentionEveryone:    djsMsg.mentions.everyone,
+            mentions:           djsMsg.mentions.users.array(),
+            mentionRoles:       djsMsg.mentions.roles.array(),
+            mentionChannels:    djsMsg.mentions.channels.array(),
+            attachments:        djsMsg.attachments.array(),
+            reactions:          djsMsg.reactions.cache.array(),
+            type:               0, //djsMsg.type
+            flags:              djsMsg.flags.bitfield,
         });
     }
 }
@@ -25,25 +33,18 @@ export class DJSRest {
         if (typeof  channel === 'string') 
             channel = await this.client.channels.fetch(channel);
         
-        //Send the message
-        let msg = null;
-        if (embed != undefined) {
-            msg = await channel.send(contents, { embed });
-        } else {
-            msg = await channel.send(contents);
-        }
-
         //Finally, execute the callback
+        const msg = await channel.send(contents,  { embed });
         return this.client.createMessage(msg);
     }
 
-    editMessage(message, contents, embed, callback) {
-        if (typeof message === 'string')
-            
+    async editMessage(message, contents, embed) {
+        const msg = await message.edit(contents, embed);
+        return this.client.createMessage(msg);
     }
 
-    deleteMessage(message) {
-
+    async deleteMessage(message) {
+        await message.delete();
     }
 }
 
