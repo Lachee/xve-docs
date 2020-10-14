@@ -39,6 +39,8 @@ This header is a [JWT](https://jwt.io/), and contains the MD5 and SHA1 hash of t
 
 **Remember, this is glorified remote code execution!**
 
+An example webhook service that automatically updates a discord.js bot can be found [example_service/index.mjs](./example_service/index.mjs)
+
 ## Custom Nodes
 
 XVE is in a very early state and does not have the framework yet to support every individual providers needs. In saying that however, with the introduction to monetization schemes, XVE will allow for integrators to define not only what nodes are available for their users, but also custom nodes.
