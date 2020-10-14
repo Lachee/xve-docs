@@ -30,4 +30,4 @@ Objects passed to graphs are expected to match the Discord API's responses. Ther
 
 ## Examples
 
-[Discord.JS](./discordjs.js)
+[Discord.JS](./discordjs.mjs)

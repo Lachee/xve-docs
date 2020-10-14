@@ -20,7 +20,7 @@ For the example code previewed in XVE, I use a tool called [astring]() to compil
 
 XVE works fairly bare bones. In order to appeal to as many potential hosts, it tries to keep true to the Discord API source. As a result, the generated AST is expected to be passed Polyfilled objects to link your SDK with XVE's.
 
-For more information on polyfilling, and a Discord.js example polyfill, please read the [Polyfill](./polyfil/polyfil.md) documentation.
+For more information on polyfilling, and a Discord.js example polyfill, please read the [Polyfill](./polyfill/polyfill.md) documentation.
 
 ## Webhooks
 

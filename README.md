@@ -11,7 +11,7 @@ A good place to start is over at the Node Index. This contains all the informati
 
 [Node Index](./nodes/index)
 
-[Polyfil](./polyfil/polyfil.md)
+[Polyfill](./polyfill/polyfill.md)
 
 
 [GH Pages](https://lachee.github.io/xve-docs/)
