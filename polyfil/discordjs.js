@@ -1,8 +1,62 @@
-export class DiscordJsPolyfill {
+export class DJSPolyfill {
     constructor(client) {
-        this.client = client;
+        this.client     = client;
+        this.rest       = new DJSRest(this);
+        this.websocket  = new DJSWebsocket(this);
     }
 
+    createMessage(djs_message) {
+        return Object.assign(djs_message, {
+            
+        });
+    }
+}
+
+export class DJSRest {
+    /** @type {DJSPolyfill} base */
+    base = null;
+    
+    constructor(base) {
+        this.base   = base;
+        this.client = base.client;
+    }
+
+    async createMessage(channel, contents, embed) {
+        if (typeof  channel === 'string') 
+            channel = await this.client.channels.fetch(channel);
+        
+        //Send the message
+        let msg = null;
+        if (embed != undefined) {
+            msg = await channel.send(contents, { embed });
+        } else {
+            msg = await channel.send(contents);
+        }
+
+        //Finally, execute the callback
+        return this.client.createMessage(msg);
+    }
+
+    editMessage(message, contents, embed, callback) {
+        if (typeof message === 'string')
+            
+    }
+
+    deleteMessage(message) {
+
+    }
+}
+
+export class DJSWebsocket {
+    /** @type {DJSPolyfill} base */
+    base = null;
+
+    constructor(base) {
+        this.base   = base;
+        this.client = base.client;
+    }
+
+    /** Subscribes to an event */
     on(event, callback) {
         switch(event) {
             default:
@@ -37,18 +91,5 @@ export class DiscordJsPolyfill {
                 break;
 
         }
-    }
-
-    sendMessage(channel, contents, embed, callback) {
-        if (typeof channel === 'string') {
-            this.client.channels.fetch(channel).then(channel => { 
-                channel.send(contents).then(msg => callback(msg));
-            });
-        } else {
-            channel.send(contents).then(msg => callback(msg));
-        }
-    }
-
-    editMessage(message, contents, embed, callback) {        
     }
 }
