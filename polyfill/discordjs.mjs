@@ -3,11 +3,32 @@ export class DJSPolyfill {
         this.client     = client;
         this.rest       = new DJSRest(this);
         this.websocket  = new DJSWebsocket(this);
+
+        this.commands = {};
+        this.websocket.on('message', msg => {
+            if (msg.author.bot) return;
+            let parts = msg.content.split(' ');
+            if (this.commands[parts]) {
+                const cmd = this.commands[parts];
+                cmd.callback(msg);
+            }
+        });
+    }
+
+    /** Register a new command */
+    command(cmd, args, fn) {
+        this.commands[cmd] = { 
+            name:       cmd,
+            types:      args,
+            callback:   fn
+        };
     }
 
     createMessage(djsMsg) {
-        if (djsMsg._converted) return djsMsg;        
-        return Object.assign(djsMsg, {
+        if (djsMsg == null) return null;
+        if (djsMsg._converted) return djsMsg;     
+        djsMsg._converted = true;   
+        return OUtil.defineProperties(djsMsg, {
             _converted:         true,
             guild:              this.createGuild(djsMsg.guild),
             channel:            this.createChannel(djsMsg.channel),
@@ -26,9 +47,11 @@ export class DJSPolyfill {
     }
 
     createChannel(djsChnl) {
+        if (djsChnl == null) return null;
         if (djsChnl._converted) return djsChnl;
+        djsChnl._converted = true;
         const typeMap = { 'text': 0, 'dm': 1, 'voice': 2, 'category': 4, 'news': 5, 'store': 6 }
-        return Object.assign(djsChnl, {
+        return OUtil.defineProperties(djsChnl, {
             _converted:         true,
             guild:              this.createGuild(djsChnl.guild),
             lastMessage:        this.createMessage(djsChnl.lastMessage),
@@ -39,8 +62,11 @@ export class DJSPolyfill {
     }
 
     createGuild(djsGuild) {
+        if (djsGuild == null) return null;
         if (djsGuild._converted) return djsGuild;
-        return Object.assign(djsGuild, {
+        
+        djsGuild._converted = true;
+        return OUtil.defineProperties(djsGuild, {
             _converted:             true,
             afkChannel:             this.createChannel(djsGuild.afkChannel),
             widgetChannel:          this.createChannel(djsGuild.widgetChannel),
@@ -50,7 +76,7 @@ export class DJSPolyfill {
             rulesChannel:           this.createChannel(djsGuild.rulesChannel),
             members:                djsGuild.members.cache.map(m => this.createMember(m)),
             channels:               djsGuild.channels.cache.map(c => this.createChannel(c)),
-            publicUpdatesChannel:   this.createChannel(publicUpdatesChannel),
+            publicUpdatesChannel:   this.createChannel(djsGuild.publicUpdatesChannel),
         });
     }
 
@@ -129,16 +155,16 @@ export class DJSWebsocket {
                 break;
 
             case 'message':
-                this.client.on('message', (message) => callback(this.client.createMessage(message)));
+                this.client.on('message', (message) => callback(this.base.createMessage(message)));
                 break;
             case 'messageUpdate':
-                this.client.on('messageUpdate', (oldMessage, newMessage) => callback(this.client.createMessage(oldMessage), this.client.createMessage(newMessage)));
+                this.client.on('messageUpdate', (oldMessage, newMessage) => callback(this.base.createMessage(oldMessage), this.base.createMessage(newMessage)));
                 break;
             case 'messageDelete':
-                this.client.on('messageDelete', (message) => callback(this.client.createMessage(message)));
+                this.client.on('messageDelete', (message) => callback(this.base.createMessage(message)));
                 break;
             case 'messageDeleteBulk':
-                this.client.on('messageDeleteBulk', (messages) => callback(messages.map(m => this.client.createMessage(m))));
+                this.client.on('messageDeleteBulk', (messages) => callback(messages.map(m => this.base.createMessage(m))));
                 break;
             
 
@@ -156,5 +182,21 @@ export class DJSWebsocket {
                 break;
 
         }
+    }
+}
+
+class OUtil {
+    static defineProperties(obj, properties) {
+        let clone = Object.assign({}, obj);
+        for(let k in properties) {
+            Object.defineProperty(clone, k, {
+                value: properties[k],
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            })
+        }
+
+        return clone;
     }
 }
