@@ -125,12 +125,15 @@ export class DJSRest {
         
         //Finally, execute the callback
         const msg = await channel.send(contents,  { embed });
-        return this.client.createMessage(msg);
+        console.log('send', msg);
+        const resp = this.base.createMessage(msg);
+        console.log('resp', msg);
+        return resp;
     }
 
     async editMessage(message, contents, embed) {
         const msg = await message.edit(contents, embed);
-        return this.client.createMessage(msg);
+        return this.base.createMessage(msg);
     }
 
     async deleteMessage(message) {

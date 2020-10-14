@@ -42,6 +42,7 @@ async function run(ast) {
         const code = generate(ast);
         console.log("Evaluating code", code);
         eval(code);
+        console.log("Evaluated");
     });
     discord.on('message', (msg) => {
         /** tmp disable */
