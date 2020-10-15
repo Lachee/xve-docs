@@ -141,7 +141,7 @@ export class DJSRest {
     }
 
     async deleteMessage(message) {
-        await message.delete();
+        return await message.channel.messages.delete(message.id, '');
     }
 }
 
@@ -231,16 +231,16 @@ export class DJSEmbedBuilder {
     }
     setThumbnail(str) { this.thumbnail = str; return this; }
     setImage(str) { this.image = str; return this; }
-    setAuthor(name, iconUrl, url) {
-        if (this.author == null) this.author = { name: null, iconUrl: null, url: null };
-        if (name != null)       this.author.name = name;
-        if (iconUrl != null)    this.author.iconUrl = iconUrl;
-        if (url != null)        this.author.url = url;
+    setAuthor(name, url, iconUrl) {
+        if (this.author == null)    this.author = { name: null, iconUrl: null, url: null };
+        if (name != null)           this.author.name = name;
+        if (iconUrl != null)        this.author.iconUrl = iconUrl;
+        if (url != null)            this.author.url = url;
         return this;
     }
     addField(title, value, inline) {
         this.fields.push({
-            title: title,
+            name: title,
             value: value,
             inline: inline != null ? inline : false
         });

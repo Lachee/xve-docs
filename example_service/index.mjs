@@ -1,12 +1,17 @@
-import dotenv from 'dotenv'; dotenv.config();
-import { DJSPolyfill } from './polyfills/discordjs.mjs';
-import { generate } from 'astring';
-import fetch  from 'node-fetch';
-import fs from 'fs/promises';
-import http from 'http';
-import Discord from 'discord.js';
-import { JWT, JWK } from 'jose';
-import crypto from 'crypto';
+import dotenv from 'dotenv'; dotenv.config();   // Load Enviroment
+
+import { generate } from 'astring';             // This will compile the code
+import fetch  from 'node-fetch';                // This will fetch the code
+import fs from 'fs/promises';                   // FileSystem load stuff
+import http from 'http';                        // Allows us to host the webhook server
+import { JWT, JWK } from 'jose';                // Allows us to verify the JWT from the webhook
+import crypto from 'crypto';                    // Allows us to compute the MD5 hash from the webhook
+
+import Discord from 'discord.js';               // The discord client
+
+import { DJSPolyfill } from './polyfills/discordjs.mjs';    // The discord's client polyfill
+import { System } from './polyfills/system.mjs';            // The system's polyfill
+
 
 console.log("XVE Example Bot Service");
 let discord = null;

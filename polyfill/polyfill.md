@@ -28,6 +28,12 @@ Objects passed to graphs are expected to match the Discord API's responses. Ther
 * Snowflakes are expected to be converted to their respective object (minus id). For example, `guild_id` should be a `guild` that returns a guild object.
 * No promises. These are not supported.
 
+## System
+XVE requires some system-related polyfills, to make it easier and more cross-compatiable with different platforms.
+It also provides a collection of utility functions such as a `wait(duration : number) : Promise<void> `.
+
+It can be found at the [system.mjs](../example_service/polyfills/system.mjs)
+
 ## Examples
 
 [Discord.JS](../example_service/polyfills/discordjs.mjs)
