@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'; dotenv.config();
-import { DJSPolyfill } from '../polyfill/discordjs.mjs';
+import { DJSPolyfill } from './polyfills/discordjs.mjs';
 import { generate } from 'astring';
 import fetch  from 'node-fetch';
 import fs from 'fs/promises';

@@ -1,3 +1,6 @@
+import Discord from 'discord.js';
+const { MessageEmbed } = Discord;
+
 export class DJSPolyfill {
     constructor(client) {
         this.client     = client;
@@ -97,7 +100,8 @@ export class DJSPolyfill {
     }
 
     createEmbed(djsEmbed) {
-        return djsEmbed;
+        if (djsEmbed instanceof DJSEmbedBuilder) return djsEmbed;
+        return new DJSEmbedBuilder(djsEmbed);
     }
 
     createReaction(djsReaction) {
@@ -124,15 +128,15 @@ export class DJSRest {
             channel = await this.client.channels.fetch(channel);
         
         //Finally, execute the callback
-        const msg = await channel.send(contents,  { embed });
-        console.log('send', msg);
+        const builtEmbed = embed ? embed.build() : null;
+        const msg = await channel.send(contents,  { embed: builtEmbed });
         const resp = this.base.createMessage(msg);
-        console.log('resp', msg);
         return resp;
     }
 
     async editMessage(message, contents, embed) {
-        const msg = await message.edit(contents, embed);
+        const builtEmbed = embed ? embed.build() : null;
+        const msg = await message.edit(contents,  { embed: builtEmbed });
         return this.base.createMessage(msg);
     }
 
@@ -188,6 +192,82 @@ export class DJSWebsocket {
     }
 }
 
+/** Custom embed builder to be compatiable with XVE */
+export class DJSEmbedBuilder {
+    constructor(djsembed) {
+        if (djsembed != null) {
+            this.title          = djsembed.title ?? null;
+            this.description    = djsembed.description ?? null;
+            this.url            = djsembed.url ?? null;
+            this.color          = djsembed.hxColor ?? null;        
+            this.footer         = djsembed.footer ? { text: djsembed.footer.text, iconUrl: djsembed.footer.iconUrl } : null;
+            this.author         = djsembed.author ? { name: djsembed.author.name, iconUrl: djsembed.author.iconUrl, url: djsembed.author.url } : null;
+            this.thumbnail      = djsembed.thumbnail ?? null;
+            this.image          = djsembed.image ?? null;        
+            this.fields         = djsembed.fields ?? [];
+        } else {
+            this.title          = null;
+            this.description    = null;
+            this.url            = null;
+            this.color          = null;
+            this.footer         = null;
+            this.author         = null;
+            this.thumbnail      = null;
+            this.image          = null;
+            this.fields         = null;
+            this.fields = [];
+        }
+    }
+
+    setTitle(str) { this.title = str; return this; }
+    setDescription(str) { this.description = str; return this; }
+    setUrl(str) { this.url = str; return this; }
+    setColor(color) { this.color = color; return this; }
+    setFooter(text, url) { 
+        if (this.footer == null) this.footer = { text: null, iconUrl: null };
+        if (text != null)   this.footer.text = text;
+        if (url != null)    this.footer.iconUrl = url;
+        return this;
+    }
+    setThumbnail(str) { this.thumbnail = str; return this; }
+    setImage(str) { this.image = str; return this; }
+    setAuthor(name, iconUrl, url) {
+        if (this.author == null) this.author = { name: null, iconUrl: null, url: null };
+        if (name != null)       this.author.name = name;
+        if (iconUrl != null)    this.author.iconUrl = iconUrl;
+        if (url != null)        this.author.url = url;
+        return this;
+    }
+    addField(title, value, inline) {
+        this.fields.push({
+            title: title,
+            value: value,
+            inline: inline != null ? inline : false
+        });
+        return this;
+    }
+
+    build() {
+        const embed = new MessageEmbed();
+        if (this.title)         embed.setTitle(this.title);
+        if (this.description)   embed.setDescription(this.description);
+        if (this.url)           embed.setURL(this.url);
+        if (this.color)         embed.setColor(this.color);
+        if (this.footer)        embed.setFooter(this.footer.text, this.footer.iconUrl);
+        if (this.thumbnail)     embed.setThumbnail(this.thumbnail);
+        if (this.image)         embed.setImage(this.image);
+        if (this.author)        embed.setAuthor(this.author.name, this.author.iconUrl, this.author.url);
+        if (this.fields) {
+            for(let i in this.fields) {
+                embed.addField(this.fields[i].name, this.fields[i].value, this.fields[i].inline);
+            }
+        }
+        return embed;
+    }
+
+}
+
+/** Utility functions */
 class OUtil {
     static defineProperties(obj, properties) {
         let clone = Object.assign({}, obj);
