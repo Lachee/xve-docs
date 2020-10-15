@@ -1,2 +1,4 @@
 title: XVE
-theme: minimal
+theme: minima
+minima:
+  skin: dark
