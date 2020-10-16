@@ -1,0 +1,19 @@
+@import "{{ site.theme }}";
+
+$background: #fff;
+$background-dark: #17181c;
+
+$color: #000;
+$color-dark: #fefefe;
+
+$link: #8825ff;
+$link-dark: #635fff;
+
+body { 
+    background: $background-dark;
+    color: $color-dark;
+}
+
+a {
+    color: $link-dark;
+}
