@@ -46,3 +46,5 @@ An example webhook service that automatically updates a discord.js bot can be fo
 XVE is in a very early state and does not have the framework yet to support every individual providers needs. In saying that however, with the introduction to monetization schemes, XVE will allow for integrators to define not only what nodes are available for their users, but also custom nodes.
 
 Currently, the custom node generation is pretty bare bones, and requires Lachee to directly add it. But in the future a flexible system will be provided.
+
+:3

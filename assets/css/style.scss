@@ -1,3 +1,6 @@
+---
+---
+
 @import "{{ site.theme }}";
 
 $background: #fff;
@@ -9,11 +12,12 @@ $color-dark: #fefefe;
 $link: #8825ff;
 $link-dark: #635fff;
 
-body { 
-    background: $background-dark;
-    color: $color-dark;
-}
+/** Light Theme **/
+body { background: $background; color: $color; }
+a { color: $link; }
 
-a {
-    color: $link-dark;
+/** Dark Theme **/
+@media (prefers-color-scheme: dark) {
+    body { background: $background-dark; color: $color-dark; }
+    a { color: $link-dark; }
 }
