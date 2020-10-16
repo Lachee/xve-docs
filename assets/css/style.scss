@@ -19,12 +19,25 @@ $link-dark: #a76bff;
 /** Light Theme **/
 body { background: $background; color: $color; }
 a { color: $link; }
-.markdown-body .highlight pre, .markdown-body pre { background: $markdown; }
 video {
     background: $markdown;
     border: 1px solid $markdown-border;
     border-radius: 5px;
     padding: 1px;
+}
+
+.markdown-body .highlight pre, 
+.markdown-body pre,
+.markdown-body table tr,
+.markdown-body code,
+.markdown-body tt
+{ 
+    background: $markdown;
+    border: 1px solid $markdown-border; 
+    border-radius: 5px 
+}
+.markdown-body table th, .markdown-body table td {        
+    border: 1px solid $markdown-border; 
 }
 
 /** Dark Theme **/
@@ -34,13 +47,10 @@ video {
     video { background: $markdown-dark; }
     .markdown-body .highlight pre, 
     .markdown-body pre,
-    .markdown-body table tr 
+    .markdown-body table tr,
+    .markdown-body code,
+    .markdown-body tt
     { 
-        background: $markdown-dark;
-        border: 1px solid $markdown-border; 
-        border-radius: 5px 
-    }
-    .markdown-body table th, .markdown-body table td {        
-        border: 1px solid $markdown-border; 
+        background-color: $markdown-dark;
     }
 }
