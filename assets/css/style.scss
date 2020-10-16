@@ -40,8 +40,11 @@ video {
     border: 1px solid $markdown-border; 
 }
 
+
 /** Dark Theme **/
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {    
+    .light-only { display: none; }
+
     body { background: $background-dark; color: $color-dark; }
     a { color: $link-dark; }
     video { background: $markdown-dark; }
@@ -53,4 +56,7 @@ video {
     { 
         background-color: $markdown-dark;
     }
+}
+@media (prefers-color-scheme: light) {
+    .dark-only { display: none;}
 }
