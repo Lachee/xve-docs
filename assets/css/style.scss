@@ -40,4 +40,7 @@ video {
         border: 1px solid $markdown-border; 
         border-radius: 5px 
     }
+    .markdown-body table th, .markdown-body table td {        
+        border: 1px solid $markdown-border; 
+    }
 }
