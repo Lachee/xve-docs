@@ -6,18 +6,35 @@
 $background: #fff;
 $background-dark: #17181c;
 
+$markdown: #f6f8fa;
+$markdown-dark: #0a0a0a;
+$markdown-border: #4a4a4a;
+
 $color: #000;
 $color-dark: #fefefe;
 
 $link: #8825ff;
-$link-dark: #635fff;
+$link-dark: #a76bff;
 
 /** Light Theme **/
 body { background: $background; color: $color; }
 a { color: $link; }
+.markdown-body .highlight pre, .markdown-body pre { background: $markdown; }
+video {
+    background: $markdown;
+    border: 1px solid $markdown-border;
+    border-radius: 5px;
+    padding: 1px;
+}
 
 /** Dark Theme **/
 @media (prefers-color-scheme: dark) {
     body { background: $background-dark; color: $color-dark; }
     a { color: $link-dark; }
+    video { background: $markdown-dark; }
+    .markdown-body .highlight pre, .markdown-body pre { 
+        background: $markdown-dark;
+        border: 1px solid $markdown-border; 
+        border-radius: 5px 
+    }
 }
