@@ -32,7 +32,10 @@ video {
     body { background: $background-dark; color: $color-dark; }
     a { color: $link-dark; }
     video { background: $markdown-dark; }
-    .markdown-body .highlight pre, .markdown-body pre { 
+    .markdown-body .highlight pre, 
+    .markdown-body pre,
+    .markdown-body table tr 
+    { 
         background: $markdown-dark;
         border: 1px solid $markdown-border; 
         border-radius: 5px 
