@@ -17,7 +17,11 @@ $link: #8825ff;
 $link-dark: #a76bff;
 
 /** Light Theme **/
-body { background: $background; color: $color; }
+body, .markdown-body img { 
+    background: $background;
+    color: $color; 
+}
+
 a { color: $link; }
 video {
     background: $markdown;
@@ -53,6 +57,7 @@ video {
     .markdown-body table tr,
     .markdown-body code,
     .markdown-body tt
+    .markdown-body img
     { 
         background-color: $markdown-dark;
     }
