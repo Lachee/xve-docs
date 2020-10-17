@@ -1,9 +1,11 @@
-<img align="left" src="https://xve.lachee.dev/images/xve.png" width=300>
+<img align="left" src="https://xve.lachee.dev/images/xve.png" width=150>
 
 ## XVE Documentation
 
 Welcome to the XVE documentation. This will contain guides and tools for writing your bot with XVE.
 If you have any issues with the documentation, feel free to contribute.
+
+🦘
 
 ### Getting Started
 
