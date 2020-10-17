@@ -3,6 +3,11 @@
 
 @import "{{ site.theme }}";
 
+/**
+Custom dark theme for Github Pages, by Lachee.
+Put this exactly /assets/css/style.scss in your GitHub Pages root.
+*/
+
 $background: #fff;
 $background-dark: #17181c;
 
@@ -62,6 +67,8 @@ video {
         background-color: $markdown-dark;
     }
 }
+
+/** Hide the dark-only */
 @media (prefers-color-scheme: light) {
     .dark-only { display: none;}
 }
