@@ -149,7 +149,7 @@ class UserConverter extends ArgumentConverter {
         let snowflake = null;
 
         //Test if its a really long number.
-        const snowflakeMatches = text.match('^\d{17,}$');
+        const snowflakeMatches = text.match(/^\d{17,}$/);
         if (snowflakeMatches && snowflakeMatches.length)
             snowflake = text;
 
