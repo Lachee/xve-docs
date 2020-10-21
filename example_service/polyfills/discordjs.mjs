@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import { CommandHandler } from './command.mjs';
 const { MessageEmbed } = Discord;
 
 export class DJSPolyfill {
@@ -6,27 +7,17 @@ export class DJSPolyfill {
         this.client     = client;
         this.rest       = new DJSRest(this);
         this.websocket  = new DJSWebsocket(this);
-
-        this.commands = {};
-        this.websocket.on('message', msg => {
-            if (msg.author.bot) return;
-            let parts = msg.content.split(' ');
-            if (this.commands[parts]) {
-                const cmd = this.commands[parts];
-                cmd.callback(msg);
-            }
-        });
+        this.commands   = new CommandHandler(this);
     }
 
     /** Register a new command */
     command(cmd, args, fn) {
-        this.commands[cmd] = { 
-            name:       cmd,
-            types:      args,
-            callback:   fn
-        };
+        this.commands.register(cmd, args, fn);
     }
 
+    /** Creates/Converts a message.
+     * @see https://xve.lachee.dev/types#message
+    */
     createMessage(djsMsg) {
         if (djsMsg == null) return null;
         if (djsMsg._converted) return djsMsg;     
@@ -49,6 +40,9 @@ export class DJSPolyfill {
         });
     }
 
+    /** Creates/Converts a channel.
+     * @see https://xve.lachee.dev/types#channel
+    */
     createChannel(djsChnl) {
         if (djsChnl == null) return null;
         if (djsChnl._converted) return djsChnl;
@@ -64,6 +58,9 @@ export class DJSPolyfill {
         });
     }
 
+    /** Creates/Converts a guild.
+     * @see https://xve.lachee.dev/types#guild
+    */
     createGuild(djsGuild) {
         if (djsGuild == null) return null;
         if (djsGuild._converted) return djsGuild;
@@ -83,35 +80,83 @@ export class DJSPolyfill {
         });
     }
 
-    createUser(djsUser) {
-        return djsUser;
-    }
-
+    /** Creates/Converts a user.
+     * @see https://xve.lachee.dev/types#user
+    */
+    createUser(djsUser) { return djsUser; }
+    /** Creates/Converts a member.
+     * @see https://xve.lachee.dev/types#member
+    */
     createMember(djsMember) {
-        return djsMember;
+        if (djsMember == null) return null;
+        if (djsMember._converted) return djsMember;
+        djsMember._converted = true;
+        return OUtil.defineProperties(djsMember, {
+            user:   this.createUser(djsMember.user),
+            nick:   djsMember.nickname,
+            roles:  djsMember.roles.cache.map(r => this.createRole(r)),
+            deaf:   djsMember.voice ? djsMember.voice.deaf : false,
+            mute:   djsMember.voice ? djsMember.voice.mute : false
+        });
     }
 
+    /** Creates/Converts a role.
+     * @see https://xve.lachee.dev/types#role
+    */
     createRole(djsRole) {
-        return djsRole;
+        if (djsRole == null) return null;
+        if (djsRole._converted) return djsRole;
+        djsRole._converted = true;
+        return OUtil.defineProperties(djsRole, {
+            color: djsRole.hexColor,
+            permissions: djsRole.permissions.bitfield
+        });
     }
 
+    /** Creates/Converts a attachment.
+     * @see https://xve.lachee.dev/types#attachment
+    */
     createAttachment(djsAttachment) {
-        return djsAttachment;
+        if (djsAttachment == null) return null;
+        if (djsAttachment._converted) return djsAttachment;
+        djsAttachment._converted = true;
+        return OUtil.defineProperties(djsAttachment, {
+            proxyUrl: djsAttachment.proxyURL
+        });
     }
 
+    /** Creates/Converts a embed builder.
+     * @see https://xve.lachee.dev/types#embed
+    */
     createEmbed(djsEmbed) {
         if (djsEmbed instanceof DJSEmbedBuilder) return djsEmbed;
         return new DJSEmbedBuilder(djsEmbed);
     }
 
-    createReaction(djsReaction) {
-        return djsReaction;
+    /** Creates/Converts a reaction.
+     * @see https://xve.lachee.dev/types#reaction
+    */
+    createReaction(djsReaction) {        
+        if (djsReaction == null) return null;
+        if (djsReaction._converted) return djsReaction;
+        djsReaction._converted = true;
+        return OUtil.defineProperties(djsReaction, {
+            emoji: this.createEmoji(djsReaction.emoji)
+        });
     }
 
+    /** Creates/Converts a emoji.
+     * @see https://xve.lachee.dev/types#emoji
+    */
     createEmoji(djsEmoji) {
-        return djsEmoji;
+        if (djsEmoji == null) return null;
+        if (djsEmoji._converted) return djsEmoji;
+        djsEmoji._converted = true;
+        return OUtil.defineProperties(djsEmoji, {
+            requireColons:      djsEmoji.requiresColons,
+            roles:              djsEmoji.roles ? djsEmoji.roles.cache.map(r => this.createRole(r)) : [],
+        });
     }
-
 }
 
 export class DJSRest {
@@ -123,7 +168,11 @@ export class DJSRest {
         this.client = base.client;
     }
 
+    /** Posts a message to a channel
+     * @see https://discord.com/developers/docs/resources/channel#create-message
+     */
     async createMessage(channel, contents, embed) {
+        console.log('DJS createMessage', channel, contents, embed);
         if (typeof  channel === 'string') 
             channel = await this.client.channels.fetch(channel);
         
@@ -134,14 +183,31 @@ export class DJSRest {
         return resp;
     }
 
+    /** Edits a message
+     * @see https://discord.com/developers/docs/resources/channel#edit-message
+     */
     async editMessage(message, contents, embed) {
+        console.log('DJS editMessage', message, contents, embed);
         const builtEmbed = embed ? embed.build() : null;
         const msg = await message.edit(contents,  { embed: builtEmbed });
         return this.base.createMessage(msg);
     }
 
+    /** Deletes a message
+     * @see https://discord.com/developers/docs/resources/channel#delete-message
+     */
     async deleteMessage(message) {
+        console.log('DJS deleteMessage', message);
         return await message.channel.messages.delete(message.id, '');
+    }
+
+    /** Gets the user object from ID
+     * @see https://discord.com/developers/docs/resources/user#get-user
+     */
+    async getUser(id) {
+        console.log('DJS getUser', id);
+        const djsUser = await this.client.users.fetch(id);
+        return this.base.createUser(djsUser);
     }
 }
 
@@ -192,7 +258,7 @@ export class DJSWebsocket {
     }
 }
 
-/** Custom embed builder to be compatiable with XVE */
+/** Custom embed builder to be compatible with XVE */
 export class DJSEmbedBuilder {
     constructor(djsembed) {
         if (djsembed != null) {
