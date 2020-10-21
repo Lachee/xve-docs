@@ -60,7 +60,12 @@ video {
 @media (prefers-color-scheme: dark) {    
     .light-only { display: none; }
 
-    body { background: $background-dark; color: $color-dark; }
+    body,
+    .markdown-body img
+    { 
+        background: $background-dark; color: 
+        $color-dark; 
+    }
     a { color: $link-dark; }
     video { background: $markdown-dark; }
     .markdown-body .highlight pre, 
@@ -68,7 +73,6 @@ video {
     .markdown-body table tr,
     .markdown-body code,
     .markdown-body tt,
-    .markdown-body img
     { 
         background-color: $markdown-dark;
     }
