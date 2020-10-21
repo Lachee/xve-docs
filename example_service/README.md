@@ -22,3 +22,10 @@ It shows how to validate the JWT header to ensure the origins of the POST, and h
 
 ### Figure B. Deploy Webhook
 ![Deploy Webhook](https://i.lu.je/2020/chrome_tANEdacQfX.png)
+
+## Important Files
+Here is a list of files that are important if you just want to see how it works:
+
+* `index.mjs` handles webhooks
+* `polyfills/discordjs.mjs` handles discord.js integration
+* `polyfills/command.mjs` handles command execution
