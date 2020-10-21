@@ -70,7 +70,7 @@ video {
     .markdown-body tt
     .markdown-body img
     { 
-        background-color: $markdown-dark;
+        background-color: $markdown-dark !important;
     }
 }
 
