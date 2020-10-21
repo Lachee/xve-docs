@@ -67,10 +67,10 @@ video {
     .markdown-body pre,
     .markdown-body table tr,
     .markdown-body code,
-    .markdown-body tt
+    .markdown-body tt,
     .markdown-body img
     { 
-        background-color: $markdown-dark !important;
+        background-color: $markdown-dark;
     }
 }
 
